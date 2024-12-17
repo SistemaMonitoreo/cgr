@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Administrador</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Panel de Control del Administrador</h1>
+        <div class="row mt-4">
+            <!-- Card para Crear Usuario -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Crear Usuario</h5>
+                        <p class="card-text">Crea nuevos usuarios para el ingreso al sistema con diferentes roles.</p>
+                        <a href="/crear_usuario" class="btn btn-primary">Ir a Crear Usuario</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Card para Listar Usuarios -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Listar Usuarios</h5>
+                        <p class="card-text">Lista los Usuarios creados para acceder al Sistema.</p>
+                        <a href="/listar_usuarios" class="btn btn-primary">Listar Usuarios</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Card para Ver Hardware Monitoreado -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Hardware Monitoreado</h5>
+                        <p class="card-text">Visualiza los equipos y su hardware registrado en el sistema.</p>
+                        <a href="/ver_datos" class="btn btn-primary">Ver Hardware</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Card para Generar Reportes -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Generar Reportes</h5>
+                        <p class="card-text">Genera reportes sobre el tiempo de respuesta y errores detectados.</p>
+                        <a href="/exportar_reporte_pdf" class="btn btn-primary">Generar Reporte</a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</body>
+</html>

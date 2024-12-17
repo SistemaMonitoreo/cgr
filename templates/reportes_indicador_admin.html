@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes de Indicadores - Administrador</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 15px;
+            left: 0;
+            height: 100%;
+            width: 250px;
+            background-color: #343a40;
+            padding-top: 20px;
+            transition: width 0.3s;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            display: block;
+            text-align: left;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: margin-left 0.3s;
+        }
+
+        /* Diseño adaptable */
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+            }
+
+            .content {
+                margin-left: 80px;
+            }
+
+            .sidebar a {
+                text-align: center;
+                padding: 10px;
+            }
+
+            .sidebar a span {
+                display: none;
+            }
+        }
+
+        .navbar {
+            background-color: #343a40;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 1000%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar h4 {
+            margin: 0;
+        }
+
+        .navbar .logout-btn {
+            color: white;
+            text-decoration: none;
+        }
+
+        .navbar .logout-btn:hover {
+            color: #dc3545;
+        }
+
+        .container {
+            margin-top: 100px;
+        }
+
+        .card {
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            color: #343a40;
+            font-size: 1.5rem;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .text-center .btn {
+            margin: 10px;
+        }
+
+        /* Estilo del botón de volver */
+        .btn-back {
+            margin-top: 20px;
+        }
+
+        .col{
+            display: flex;
+            justify-content: center !important;
+        }
+
+        .row{
+            display: flex;
+            justify-content: center !important;
+        }
+
+        /* Estilo del aviso de cerrar sesión */
+        .modal-content {
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Panel lateral -->
+    <div class="sidebar">
+        <a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-home"></i> <span>Inicio</span></a>
+        <a href="{{ url_for('crear_usuario') }}"><i class="fas fa-user-plus"></i> <span>Crear Usuario</span></a>
+        <a href="{{ url_for('listar_usuarios') }}"><i class="fas fa-users"></i> <span>Listar Usuarios</span></a>
+        <a href="{{ url_for('ver_datos') }}"><i class="fas fa-desktop"></i> <span>Hardware Monitoreado</span></a>
+        <a href="{{ url_for('reportes_pdf_admin') }}"><i class="fas fa-file-pdf"></i> <span>Generar Reportes</span></a>
+        <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span></a>
+    </div>
+
+    <!-- Barra superior -->
+    <div class="navbar">
+        <h4>Bienvenido, {{ session['nombre_completo'] }}!</h4>
+        <a href="#" data-toggle="modal" data-target="#logoutModal" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+    </div>
+
+    <!-- Modal para cerrar sesión -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">¿Deseas cerrar sesión?</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Selecciona "Cerrar Sesión" si estás listo para finalizar la sesión actual.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <a href="{{ url_for('logout') }}" class="btn btn-danger">Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor principal para las tarjetas de los reportes -->
+    <div class="container">
+        <h1 class="text-center mb-5">Generar Reportes de Indicadores</h1>
+        <div class="row">
+            <!-- Card para Reporte de Inventario de Hardware -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Indicador 1: Tiempo Promedio de Detección de Fallos</h5>
+                        <p class="card-text">Resumen de los equipos que ha tenido un fallo en un determinado tiempo.</p>
+                        <a href="/reporte_indicador_fallos" class="btn btn-primary"><i class="fas fa-desktop"></i> Seleccionar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">    
+        <!-- Card para Reporte de Estado de Equipos -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Indicador 2: Tasa de Fallos por Activo</h5>
+                        <p class="card-text">Resumen de los Fallos generados por cada Activo.</p>
+                        <a href="/reporte_tasa_fallos" class="btn btn-primary"><i class="fas fa-server"></i> Seleccionar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Botón Volver -->
+        <div class="text-center btn-back">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS y FontAwesome -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</body>
+</html>

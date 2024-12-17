@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoreo de Equipos</title>
+    <!-- Agregar Bootstrap para diseño responsive -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Agregar DataTables CSS para la tabla interactiva -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa; /* Color de fondo suave */
+        }
+        h1 {
+            text-align: center; /* Centrar el título */
+            margin-top: 20px;
+            font-size: 2.5em;
+            color: #343a40; /* Color de texto */
+        }
+        table {
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+        th {
+            background-color: #343a40; /* Color de fondo de la cabecera */
+            color: white; /* Color de texto en la cabecera */
+            text-align: center;
+        }
+        td {
+            text-align: center; /* Alineación central de las celdas */
+        }
+        .container {
+            max-width: 90%;
+        }
+        .alert-icon {
+            color: red;
+            font-weight: bold;
+        }
+        .dataTables_filter {
+            float: right;
+        }
+        .dataTables_length {
+            float: left;
+        }
+        .pagination {
+            justify-content: center;
+        }
+        .navbar {
+            background-color: #343a40;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar h4 {
+            margin: 0;
+        }
+        .navbar .logout-btn {
+            color: white;
+            text-decoration: none;
+        }
+        .navbar .logout-btn:hover {
+            color: #dc3545;
+        }
+        .btn-back {
+            background-color: #f8f9fa;
+            color: #007bff;
+            border: 1px solid #007bff;
+            margin-top: 20px;
+        }
+        .btn-back:hover {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra superior -->
+    <div class="navbar">
+        <h4>Bienvenido, {{ session['nombre_completo'] }}!</h4>
+        <a href="{{ url_for('logout') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+    </div>
+
+    <div class="container">
+        <h1>Monitoreo de Hardware de Equipos</h1>
+
+        <!-- Botones de exportar e imprimir al lado derecho -->
+        <div class="mb-3 text-right">
+            <button id="export-pdf" class="btn btn-danger"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
+            <button id="export-excel" class="btn btn-success"><i class="fas fa-file-excel"></i> Exportar Excel</button>
+            <button id="print-view" class="btn btn-primary"><i class="fas fa-print"></i> Imprimir</button>
+        </div>
+
+        <table id="equiposTable" class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Hostname</th>
+                    <th>Usuario Logueado</th>
+                    <th>Sistema Operativo</th>
+                    <th>Tipo de Equipo</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Serie</th>
+                    <th>CPU</th>
+                    <th>RAM Total</th>
+                    <th>Disco Duro</th>
+                    <th>Tarjeta Inalámbrica</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for equipo in equipos %}
+                <tr>
+                    <td>{{ equipo.hostname }}</td>
+                    <td>{{ equipo.usuario_logueado }}</td>
+                    <td>{{ equipo.sistema_operativo }}</td>
+                    <td>{{ equipo.tipo_equipo }}</td>
+                    <td>{{ equipo.marca }}</td>
+                    <td>{{ equipo.modelo }}</td>
+                    <td>{{ equipo.serie }}</td>
+                    
+                    <!-- Mostrar CPU -->
+                    <td>
+                        {% for hw in equipo.hardware if hw.tipo_hardware == 'CPU' %}
+                            {{ hw.descripcion }} ({{ hw.capacidad }})
+                        {% endfor %}
+                    </td>
+
+                    <!-- Mostrar RAM -->
+                    <td>
+                        {% for hw in equipo.hardware if hw.tipo_hardware == 'RAM' %}
+                            {{ hw.descripcion }} 
+                        {% endfor %}
+                    </td>
+
+                    <!-- Mostrar Disco Duro -->
+                    <td>
+                        {% for hw in equipo.hardware if hw.tipo_hardware == 'Disco Duro' %}
+                            {{ hw.descripcion }} ({{ hw.capacidad }})
+                        {% endfor %}
+                    </td>
+
+                    <!-- Mostrar Tarjeta Inalámbrica -->
+                    <td>
+                        {% for hw in equipo.hardware if hw.tipo_hardware == 'Tarjeta de Red' %}
+                            {{ hw.descripcion }} ({{ hw.capacidad }})
+                        {% endfor %}
+                    </td>
+
+                    <!-- Estado del equipo -->
+                    <td>
+                        {% if equipo.alertas %}
+                            <span class="alert-icon">&#9888; Alerta</span>
+                        {% else %}
+                            Normal
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Botón Volver -->
+        <div class="text-center mt-4">
+            {% if session['rol'] == 'administrador' %}
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Volver al Panel de Administrador</a>
+            {% elif session['rol'] == 'tecnico' %}
+                <a href="{{ url_for('tecnico_dashboard') }}" class="btn btn-secondary">Volver al Panel de Técnico</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <!-- DataTables Buttons JS -->
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <!-- JSZip para exportar a Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <!-- pdfmake para exportar a PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <!-- Botones HTML5 para exportar -->
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+    <!-- Botones de impresión -->
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Inicializar DataTables
+            var table = $('#equiposTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "order": [[ 0, 'asc' ]], // Ordenar por la primera columna (Hostname) al cargar
+                "pageLength": 10, // Mostrar 10 registros por página por defecto
+                "responsive": true, // Hacer la tabla responsive
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros por página",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando página _PAGE_ de _PAGES_",
+                    "infoEmpty": "No hay registros disponibles",
+                    "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                    "search": "Buscar:",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Último",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                }
+            });
+
+            // Funcionalidad de exportar PDF
+            $('#export-pdf').on('click', function() {
+                table.button('.buttons-pdf').trigger();
+            });
+
+            // Funcionalidad de exportar Excel
+            $('#export-excel').on('click', function() {
+                table.button('.buttons-excel').trigger();
+            });
+
+            // Funcionalidad de imprimir
+            $('#print-view').on('click', function() {
+                table.button('.buttons-print').trigger();
+            });
+
+            // Agregar botones de exportación de DataTables
+            new $.fn.dataTable.Buttons(table, {
+                buttons: [
+                    {
+                        extend: 'pdfHtml5',
+                        text: 'Exportar PDF',
+                        className: 'd-none',
+                        orientation: 'landscape', // Formato horizontal
+                        pageSize: 'A4', // Tamaño A4
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: 'Exportar Excel',
+                        className: 'd-none',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: 'Imprimir',
+                        className: 'd-none',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }
+                ]
+            });
+            table.buttons(0, null).container().appendTo($('#equiposTable_wrapper .col-md-6:eq(0)'));
+        });
+    </script>
+</body>
+</html>

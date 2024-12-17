@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar Reportes - Administrador</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa; /* Color de fondo suave */
+        }
+
+        .navbar {
+            background-color: #343a40;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar h4 {
+            margin: 0;
+        }
+
+        .navbar .logout-btn {
+            color: white;
+            text-decoration: none;
+        }
+
+        .navbar .logout-btn:hover {
+            color: #dc3545;
+        }
+
+        .container {
+            margin-top: 100px;
+        }
+
+        .card {
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            color: #343a40;
+            font-size: 1.5rem;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .text-center .btn {
+            margin: 10px;
+        }
+
+        /* Estilo del botón de volver */
+        .btn-back {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra superior -->
+    <div class="navbar">
+        <h4>Bienvenido, {{ session['nombre_completo'] }}!</h4>
+        <a href="#" data-toggle="modal" data-target="#logoutModal" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+    </div>
+
+    <!-- Modal para cerrar sesión -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">¿Deseas cerrar sesión?</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Selecciona "Cerrar Sesión" si estás listo para finalizar la sesión actual.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <a href="{{ url_for('logout') }}" class="btn btn-danger">Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor principal para las tarjetas de los reportes -->
+    <div class="container">
+        <h1 class="text-center mb-5">Generar Reportes</h1>
+        <div class="row">
+            <!-- Card para Reporte de Inventario de Hardware -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Reporte de Inventario de Hardware</h5>
+                        <p class="card-text">Resumen de todos los equipos y hardware registrados en el sistema.</p>
+                        <a href="/reporte_inventario_hardware" class="btn btn-primary"><i class="fas fa-desktop"></i> Generar Reporte</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card para Reporte de Alertas de Hardware -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Reporte de Alertas de Hardware</h5>
+                        <p class="card-text">Historial de todas las alertas generadas por cambios o fallos en el hardware.</p>
+                        <a href="/reporte_alertas_hardware" class="btn btn-primary"><i class="fas fa-bell"></i> Generar Reporte</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card para Reporte de Estado de Equipos -->
+            <div class="col-md-6 mt-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Reporte de Estado de Equipos</h5>
+                        <p class="card-text">Verifica el estado actual de cada equipo y su funcionalidad.</p>
+                        <a href="/reporte_estado_equipos" class="btn btn-primary"><i class="fas fa-server"></i> Generar Reporte</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card para Reporte de Cambios de Hardware -->
+            <div class="col-md-6 mt-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Reporte de Cambios de Hardware</h5>
+                        <p class="card-text">Registro de todos los cambios físicos realizados en el hardware.</p>
+                        <a href="/reporte_cambios_hardware" class="btn btn-primary"><i class="fas fa-exchange-alt"></i> Generar Reporte</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón Volver -->
+        <div class="text-center btn-back">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS y FontAwesome -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</body>
+</html>

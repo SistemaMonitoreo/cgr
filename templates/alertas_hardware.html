@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Alertas de Hardware</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #f8f9fa; /* Color de fondo suave */
+        }
+
+        .navbar {
+            background-color: #343a40;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar h4 {
+            margin: 0;
+        }
+
+        .navbar .logout-btn {
+            color: white;
+            text-decoration: none;
+        }
+
+        .navbar .logout-btn:hover {
+            color: #dc3545;
+        }
+
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 56px; /* Debajo de la barra superior */
+            left: 0;
+            width: 220px;
+            background-color: #343a40;
+            padding-top: 20px;
+            z-index: 999;
+        }
+
+        .sidebar a {
+            padding: 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+            text-align: left;
+        }
+
+        .sidebar a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .container {
+            margin-left: 240px;
+            margin-top: 100px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-back {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra superior -->
+    <div class="navbar">
+        <h4>Bienvenido, {{ session['nombre_completo'] }}!</h4>
+        <a href="#" data-toggle="modal" data-target="#logoutModal" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+    </div>
+
+    <!-- Modal para cerrar sesión -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">¿Deseas cerrar sesión?</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Selecciona "Cerrar Sesión" si estás listo para finalizar la sesión actual.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <a href="{{ url_for('logout') }}" class="btn btn-danger">Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel lateral izquierdo -->
+    <div class="sidebar">
+        <a href="/dashboard_admin"><i class="fas fa-tachometer-alt"></i> Panel de Control</a>
+        <a href="/reporte_inventario_hardware"><i class="fas fa-desktop"></i> Inventario de Hardware</a>
+        <a href="/reporte_alertas_hardware"><i class="fas fa-bell"></i> Alertas de Hardware</a>
+        <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <h1>Reporte de Alertas de Hardware</h1>
+
+        <!-- Tabla de alertas -->
+        <table id="alertasTable" class="display nowrap table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th>ID Alerta</th>
+                    <th>Hostname</th>
+                    <th>Descripción</th>
+                    <th>Tipo de Hardware</th>
+                    <th>Fecha de Alerta</th>
+                    <th>Generada por NN</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alerta in alertas_data %}
+                <tr>
+                    <td>{{ alerta.id_alerta }}</td>
+                    <td>{{ alerta.hostname }}</td>
+                    <td>{{ alerta.descripcion }}</td>
+                    <td>{{ alerta.tipo_hardware }}</td>
+                    <td>{{ alerta.fecha_alerta }}</td>
+                    <td>{{ alerta.generada_por_nn }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Botón Volver -->
+        <div class="text-center mt-4">
+            {% if session['rol'] == 'administrador' %}
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Volver al Panel de Administrador</a>
+            {% elif session['rol'] == 'tecnico' %}
+                <a href="{{ url_for('tecnico_dashboard') }}" class="btn btn-secondary">Volver al Panel de Técnico</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Scripts para DataTables y exportación -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.pdf.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Inicializar DataTables con botones de exportación
+            $('#alertasTable').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+        });
+    </script>
+</body>
+</html>
+

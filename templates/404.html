@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página No Encontrada</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Error 404 - Página No Encontrada</h1>
+    <p>Lo sentimos, pero la página que estás buscando no existe.</p>
+    <a href="{{ url_for('reporte_indicador_fallos') }}">Volver al reporte</a>
+</body>
+</html>

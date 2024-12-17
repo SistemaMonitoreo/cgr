@@ -1,0 +1,12 @@
+Reporte de Pruebas
+==================
+Fecha: 2024-11-20 12:18:45
+Total de pruebas ejecutadas: 3
+Fallos: 0
+Errores: 0
+Éxitos: 3
+
+Prueba: None
+Estado: Passed
+Detalles: N/A
+

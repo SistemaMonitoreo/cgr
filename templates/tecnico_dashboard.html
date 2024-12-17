@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Técnico</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+            background-color: #f8f9fa;
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 250px;
+            background-color: #343a40;
+            padding-top: 20px;
+            transition: width 0.3s;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            display: block;
+            text-align: left;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: margin-left 0.3s;
+        }
+
+        /* Diseño adaptable */
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+            }
+
+            .content {
+                margin-left: 80px;
+            }
+
+            .sidebar a {
+                text-align: center;
+                padding: 10px;
+            }
+
+            .sidebar a span {
+                display: none;
+            }
+        }
+
+        .card-img-top {
+            width: 80%;
+            height: 120px;
+            object-fit:cover;
+        }
+
+        .card {
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .button {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Barra superior */
+        .navbar {
+            background-color: #343a40;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h4 {
+            margin: 0;
+        }
+
+        .navbar .logout-btn {
+            color: white;
+            text-decoration: none;
+        }
+
+        .navbar .logout-btn:hover {
+            color: #dc3545;
+        }
+
+        /* Estilo del aviso de cerrar sesión */
+        .modal-content {
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Panel lateral -->
+    <div class="sidebar">
+        <a href="/tecnico_dashboard"><i class="fas fa-tachometer-alt"></i> Panel de Control</a>
+        <a href="/ver_datos"><i class="fas fa-desktop"></i> Hardware Monitoreado</a>
+        <a href="/exportar_reporte_pdf"><i class="fas fa-file-pdf"></i> Generar Reportes</a>
+        <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span></a>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="content">
+        <!-- Barra superior -->
+        <div class="navbar">
+            <h4>Bienvenido, {{ session['nombre_completo'] }}!</h4>
+            <a href="#" id="logout-link" class="logout-btn" data-toggle="modal" data-target="#logoutModal">Cerrar Sesión</a>
+        </div>
+    
+
+        <!-- Contenido del panel -->
+        <div class="container mt-5">
+            <h1 class="text-center">Panel de Control del Técnico</h1>
+            <div class="row mt-4">
+                <!-- Card para Ver Hardware Monitoreado -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Hardware Monitoreado</h5>
+                            <p class="card-text">Visualiza los equipos y su hardware registrado en el sistema.</p>
+                            <a href="/ver_datos" class="btn btn-primary"><i class="fas fa-desktop"></i> Ver Hardware</a>
+                        </div>
+                    </div>
+                </div>
+            <!-- Card para Generar Reportes -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Generar Reportes</h5>
+                        <p class="card-text">Genera reportes sobre el tiempo de respuesta y errores detectados.</p>
+                        <a href="/reportes_pdf_tecnico" class="btn btn-primary"><i class="fas fa-file-pdf"></i> Generar Reporte</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal para cerrar sesión -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <h5 class="modal-title" id="logoutModalLabel">¿Deseas cerrar la sesión?</h5>
+                <div class="modal-body">
+                    <p>Estás a punto de cerrar tu sesión. ¿Deseas continuar?</p>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <a href="{{ url_for('logout') }}" class="btn btn-danger">Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS y FontAwesome -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <!-- Bootstrap JS y jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Prevenir que el botón "Atrás" funcione después de cerrar sesión
+        window.history.pushState(null, null, window.location.href);
+        window.onpopstate = function () {
+            window.history.pushState(null, null, window.location.href);
+            $('#logoutModal').modal('show'); // Mostrar aviso si intenta regresar
+        };
+
+        // Cerrar sesión al hacer clic en el botón de "Cerrar Sesión"
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            $('#logoutModal').modal('show');
+        });
+    </script>
+</body>
+</html>

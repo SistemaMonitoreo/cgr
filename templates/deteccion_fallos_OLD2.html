@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Tiempo Promedio de Detección de Fallos</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Reporte de Tiempo Promedio de Detección de Fallos</h1>
+    <button id="view-chart" class="btn btn-info"><i class="fas fa-chart-bar"></i> Ver Gráfica</button>
+</div>
+
+<!-- Modal de Gráfica -->
+<div class="modal fade" id="chartModal" tabindex="-1" role="dialog" aria-labelledby="chartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="chartModalLabel">Gráfica de Tiempo Promedio de Detección</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <canvas id="fallosChart"></canvas>
+            </div>
+            <div class="modal-footer">
+                <button id="print-chart" class="btn btn-primary">Imprimir Gráfica</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery y Bootstrap JS para la funcionalidad del modal -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Evento de clic para abrir el modal de gráfica
+        $('#view-chart').on('click', function() {
+            // Datos de prueba para la gráfica
+            const labels = ['Host1', 'Host2', 'Host3'];
+            const dataSum = [300, 400, 200];
+            const dataAvg = [100, 150, 80];
+
+            // Destruye la gráfica previa si existe
+            if (typeof window.fallosChart !== 'undefined' && window.fallosChart instanceof Chart) {
+                window.fallosChart.destroy();
+            }
+
+            // Configura la nueva gráfica
+            const ctx = document.getElementById('fallosChart').getContext('2d');
+            window.fallosChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Suma de Tiempos de Detección',
+                            data: dataSum,
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Tiempo Promedio de Detección',
+                            data: dataAvg,
+                            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Mostrar el modal con la gráfica
+            $('#chartModal').modal('show');
+        });
+
+        // Función de impresión para la gráfica
+        $('#print-chart').on('click', function() {
+            const canvas = document.getElementById('fallosChart');
+            const dataUrl = canvas.toDataURL('image/png');
+            
+            const windowContent = `
+                <html>
+                    <head>
+                        <title>Imprimir Gráfica</title>
+                    </head>
+                    <body>
+                        <img src="${dataUrl}" style="width:100%;"/>
+                    </body>
+                </html>`;
+            
+            const printWindow = window.open('', '', 'width=800,height=600');
+            printWindow.document.open();
+            printWindow.document.write(windowContent);
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+        });
+    });
+</script>
+
+</body>
+</html>
